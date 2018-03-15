@@ -1,0 +1,396 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>C13</title>
+
+	<!--=================================================-->
+
+	<!--STYLESHEET-->
+    {% block main-head %}
+	<!--Bootstrap Stylesheet [ REQUIRED ]-->
+	{% include '_head_css_js.html' %}
+
+    {% endblock %}
+    {% block extra_head_resources %}{% endblock %}
+
+</head>
+
+<body>
+
+
+<div id="container" class="effect mainnav-lg">
+{% csrf_token %}
+
+    <!--NAVBAR-->
+    <!--===================================================-->
+    <header id="navbar">
+        <div id="navbar-container" class="boxed" >
+
+            <!--Brand logo & name-->
+            <!--================================-->
+            <div class="navbar-header">
+                <a href="/" class="navbar-brand">
+                    <img src="/static/img/eye_logo.png" alt="Nifty Logo" class="brand-icon">
+                    <div class="brand-title">
+                        <span class="brand-text"> &nbsp;&nbsp;C13</span>
+                    </div>
+                </a>
+            </div>
+            <!--user login-->
+            {% include '_nav.html' %}
+            <!--================================-->
+            <!--End Navbar Dropdown-->
+
+        </div>
+    </header>
+    <!--===================================================-->
+    <!--END NAVBAR-->
+
+    <div class="boxed">
+
+        <!--CONTENT CONTAINER-->
+        <!--===================================================-->
+        <div id="content-container">
+
+            <!--Page Title-->
+            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+            <div id="page-title">
+                <h1 class="page-header text-overflow">{% block page-title %}{% endblock %}</h1>
+
+            </div>
+            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+            <!--End page title-->
+
+            {% block breadcrumb %} {% endblock %}
+
+            <div id="page-content">
+            {% block page-content %}
+
+                <div class="row"> <!--首页概览-->
+                    <div class="col-sm-6 col-lg-3">
+
+                        <!--Registered User-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <div class="panel media pad-all">
+                            <div class="media-left">
+                                <span class="icon-wrap icon-wrap-sm icon-circle bg-success">
+                                <i class="fa fa-server fa-2x"></i>
+                                </span>
+                            </div>
+
+                            <div class="media-body">
+                                <p id="total_servers" class="text-2x mar-no text-thin"></p>
+                                <p class="text-muted mar-no">已管理服务器</p>
+                            </div>
+                        </div>
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+
+                        <!--New Order-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <div class="panel media pad-all">
+                            <div class="media-left">
+                                <span class="icon-wrap icon-wrap-sm icon-circle bg-info">
+                                <i class="fa fa-user fa-2x"></i>
+                                </span>
+                            </div>
+
+                            <div class="media-body">
+                                <p id="total_users" class="text-2x mar-no text-thin">0</p>
+                                <p class="text-muted mar-no">注册用户数</p>
+                            </div>
+                        </div>
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+
+                        <!--Comments-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <div class="panel media pad-all">
+                            <div class="media-left">
+                                <span class="icon-wrap icon-wrap-sm icon-circle bg-warning">
+                                <i class="fa fa-comment fa-2x"></i>
+                                </span>
+                            </div>
+
+                            <div  class="media-body">
+                                <p id="current_logging_users" style="cursor: pointer" onclick="ShowOnlineUsers()" class="text-2x btn-link  mar-no text-thin"></p>
+                                <p class="text-muted mar-no">当前在线用户</p>
+                            </div>
+                        </div>
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+
+                        <!--Sales-->
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <div class="panel media pad-all">
+                            <div class="media-left">
+                                <span class="icon-wrap icon-wrap-sm icon-circle bg-danger">
+                                <i class="fa fa-desktop fa-2x"></i>
+                                </span>
+                            </div>
+
+                            <div class="media-body">
+                                <p id="current_connected_hosts" style="cursor: pointer" onclick="ShowOnlineHosts()"  class="text-2x mar-no btn-link text-thin"></p>
+                                <p class="text-muted mar-no">正在连接的主机数</p>
+                            </div>
+                        </div>
+                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+                    </div>
+                </div> <!--end首页概览-->
+                <div class="row">
+                    <div class="col-lg-8">
+
+                        <div class="panel">
+                            <div class="panel-heading">
+
+                                <h3 class="panel-title">用户登录量统计</h3>
+                            </div>
+                        <div id="chart-container" style="height: 300px; min-width: 310px;">
+
+
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+
+                        <div class="panel">
+                            <div class="panel-heading">
+
+                                <h3 class="panel-title">最近活跃用户统计</h3>
+                            </div>
+
+                            <div  class="panel-body" style="height: 300px">
+
+                                <table class="table  table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>用户</th>
+                                                <th>登录次数</th>
+                                                <th>操作命令数</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recent_active_users">
+
+                                        </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                     <div class="col-lg-12">
+
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">最近10条批量任务纪录</h3>
+                            </div>
+                            <div class="table-responsive">
+                        </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            {% endblock %}
+            </div>
+        </div>
+        <nav id="mainnav-container" style="height: 111%">
+            <div id="mainnav">
+                <div id="mainnav-menu-wrap">
+                    <div class="nano">
+                        <div class="nano-content">
+                            <ul id="mainnav-menu" class="list-group">
+                                <!--Menu list item-->
+                                {% if request.user.is_superuser %}
+                                <li >
+                                    <a href="/">
+                                        <i class="fa fa-dashboard"></i>
+                                        <span class="menu-title">首页</span>
+                                    </a>
+                                </li>
+                                {% endif %}
+
+                                <!--Menu list item-->
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-server"></i>
+                                        <span class="menu-title">
+                                            <strong>主机</strong>
+                                        </span>
+                                    </a>
+                                    <!--Submenu-->
+                                    <ul class="collapse">
+                                        <li><a href="{% url 'assets:asset-list' %}">主机资源</a></li>
+                                        <li><a href="#">虎虎</a></li>
+                                        <li><a href="#">妞妞</a></li>
+                                    </ul>
+                                </li>
+
+                                <!--Menu list item-->
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-random"></i>
+                                        <span class="menu-title">
+                                            <strong>批量</strong>
+                                        </span>
+                                    </a>
+                                    <!--Submenu-->
+                                    <ul class="collapse">
+                                        <li><a href="/hosts/multi">批量命令</a></li>
+                                        <li><a href="/hosts/multi/filetrans">文件分发</a></li>
+                                        <li><a href="/kingadmin/web/tasklog/">任务日志</a></li>
+                                    </ul>
+                                </li>
+
+                                <!--Menu list item-->
+                                {% if request.user.role.is_Administrator %}
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-book"></i>
+                                        <span class="menu-title">
+                                            操作纪录
+                                        </span>
+                                    </a>
+                                    <ul class="collapse">
+                                        <li><a href="/host/detail/">按主机</a></li>
+
+
+                                    </ul>
+                                </li>
+                                {% endif %}
+
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-server"></i>
+                                        <span class="menu-title">
+                                            <strong>定时任务</strong>
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="/kingadmin/" >
+                                        <i class="fa fa-cog"></i>
+                                        <span class="menu-title">
+                                            <strong>配置</strong>
+                                        </span>
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+                <!--================================-->
+                <!--End menu-->
+
+            </div>
+        </nav>
+        <!--===================================================-->
+        <!--END MAIN NAVIGATION-->
+
+    {% block aside-bar %}
+
+    {% include 'user_audit_modal.html' %}
+    {% include 'user_audit_js.html' %}
+
+    {% endblock   %}
+    </div>
+
+
+
+    <!-- FOOTER -->
+    <!--===================================================-->
+    <footer id="footer">
+
+        <div class="hide-fixed pull-right pad-rgt">Currently v1.0</div>
+
+
+        <p class="pad-lft">&#0169; 2018 c13 ; 只为好玩</p>
+
+
+    </footer>
+    <!--===================================================-->
+    <!-- END FOOTER -->
+
+
+    <!-- SCROLL TOP BUTTON -->
+    <!--===================================================-->
+    <button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>
+    <!--===================================================-->
+
+
+
+</div>
+	<!--===================================================-->
+	<!-- END OF CONTAINER -->
+<!--Large Bootstrap Modal-->
+<!--===================================================-->
+<div id="large-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" >
+            <div class="modal-header" style="opacity:1">
+                <button class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title" id="myLargeModalLabel">当天登录用户</h4>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--===================================================-->
+<!--End Large Bootstrap Modal-->
+
+	<!--JAVASCRIPT-->
+	<!--=================================================-->
+    {% include '_foot_js.html' %}
+
+    <script type="text/javascript">
+        // using jQuery
+        $(document).ready(function(){
+
+            //var csrftoken = $.cookie('csrftoken');
+            var csrftoken = Cookies.get('csrftoken');
+
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+        //set active menu node on left sidebar
+        SetActiveMenu("{{active_node}}");
+
+        })
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.dp-component .input-group.date').datepicker({autoclose:true});
+        	$('.tp-textinput').timepicker();
+
+
+        })
+    </script>
+
+</body>
+</html>
