@@ -41,15 +41,6 @@ class Asset(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, max_length=12, null=True, blank=True,
                               default='In use', verbose_name='Asset status')
 
-    # Some information
-    public_ip = models.GenericIPAddressField(max_length=32, blank=True,
-                                             null=True, verbose_name='Public IP')
-    remote_card_ip = models.CharField(max_length=16, null=True, blank=True,
-                                      verbose_name='Remote control card IP')
-    cabinet_no = models.CharField(max_length=32, null=True, blank=True, verbose_name='Cabinet number')
-    cabinet_pos = models.IntegerField(null=True, blank=True, verbose_name='Cabinet position')
-    number = models.CharField(max_length=32, null=True, blank=True, verbose_name='Asset number')
-
     # Collect
     vendor = models.CharField(max_length=64, null=True, blank=True, verbose_name='Vendor')
     model = models.CharField(max_length=54, null=True, blank=True, verbose_name='Model')
@@ -61,15 +52,11 @@ class Asset(models.Model):
     memory = models.CharField(max_length=64, null=True, blank=True, verbose_name='Memory')
     disk_total = models.CharField(max_length=1024, null=True, blank=True, verbose_name='Disk total')
     disk_cloud = models.CharField(max_length=1024, null=True, blank=True, verbose_name='Disk cloud')
-    disk_info = models.CharField(max_length=1024, null=True, blank=True, verbose_name='Disk info')
 
-    platform = models.CharField(max_length=128, null=True, blank=True, verbose_name='Platform')
     os = models.CharField(max_length=128, null=True, blank=True, verbose_name='OS')
     os_version = models.CharField(max_length=16, null=True, blank=True, verbose_name='OS version')
     os_arch = models.CharField(max_length=16, blank=True, null=True, verbose_name='OS arch')
-    hostname_raw = models.CharField(max_length=128, blank=True, null=True, verbose_name='Hostname raw')
 
-    created_by = models.CharField(max_length=32, null=True, blank=True, verbose_name='Created by')
     date_created = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name='Date created')
     comment = models.TextField(max_length=128, default='', blank=True, verbose_name='Comment')
 

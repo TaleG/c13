@@ -14,7 +14,7 @@ def AssetListView(request):
         infos = request.POST.get('ipnmb','')
         if infos:
             assets = assets.filter(Q(ip__icontains=infos) | Q(admin_user__name__icontains=infos))
-            return render(request, 'assets/hosts.html',
+            return render(request, 'assets/host_list.html',
                           {'contacts': assets},
                           )
 
@@ -30,6 +30,16 @@ def AssetListView(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         contacts = paginator.page(paginator.num_pages)
 
-    return render(request, 'assets/hosts.html',
+    return render(request, 'assets/host_list.html',
                   {'contacts': contacts},
                   )
+
+def AssetDetailView(request):
+    asset_id = request.GET.get('id', '')
+    assets = models.Asset.objects.all()
+    if asset_id:
+        assets = assets.filter(Q(id__contains=asset_id))
+
+        return render(request, 'assets/host_detail.html',
+                      {'assets':assets}
+                      )

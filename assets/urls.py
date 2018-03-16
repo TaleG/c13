@@ -7,5 +7,6 @@ app_name = 'assets'
 
 urlpatterns = [
     url(r'^asset/$', views.AssetListView, name='asset-list'),
+    url(r'^asset/detail/$', views.AssetDetailView, name='asset_detail'),
 
 ]

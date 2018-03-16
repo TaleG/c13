@@ -22,3 +22,11 @@ def guess_page(current_page,loop_num):
         return format_html(page_ele)
     else:
         return ''
+
+@register.filter(name='ip_str_to_list')
+def ip_str_to_list(ip_str):
+    """
+    ip str to list
+    """
+    return ip_str.split(',')
+
