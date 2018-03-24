@@ -57,82 +57,58 @@
                     </form>
                  </div>
              </div>
-                 <div class="pannel-body">
+                 <div class="pannel-body" id="asset_form">
                      <div class="list-group" >
-                       {#% for g_id,data in host_group_dic.items %#}
                          <div class="table-responsive">
                             <table class="table table-condensed">
                                 <thead>
                                     <tr>
-                                        <th class="text-center"><input type="checkbox" id="select_all"></th>
-                                        <th>IP地址</th>
-                                        <th>主机名</th>
-                                        <th>机房</th>
-                                        <th>管理用户</th>
-                                        <th>系统</th>
-                                        <th>配置</th>
-                                        <th>状态</th>
+                                        <th class="text-center">
+                                        <input id="checkall" type="checkbox" class="i-checks" name="checkall" value="checkall" data-editable='false' onclick="check_all('asset_form')">
+                                        </th>
+                                        <th class="text-center">IP地址</th>
+                                        <th class="text-center">主机名</th>
+                                        <th class="text-center">机房</th>
+                                        <th class="text-center">管理用户</th>
+                                        <th class="text-center">系统</th>
+                                        <th class="text-center">配置</th>
+                                        <th class="text-center">操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for g in contacts %}
-                                            <tr>
-                                                <td class="text-center"><input type="checkbox" name="selected" value="{{ g.id }}"></td>
-                                                <td><a href="{% url 'assets:asset_detail'%}?id={{ g.id}}">{{ g.ip }}</a></td>
-                                                <td><a href="#" class="">{{ g.hostname }}</a></td>
-                                                <td><a href="#" class="">{{ g.idc.name }}</a></td>
-                                                <td><a class="">{{ g.admin_user }}</a></td>
-                                                <td><span class="">{{ g.os }}{{ g.os_version }}</span></td>
-                                                <td><span class="">{{ g.cpu_count }}C/{{ g.memory }}G/{{ g.disk_total }}G/{{ g.disk_cloud }}/G</span></td>
-                                                <td><span class="">{{ g.status }}</span></td>
-                                            </tr>
-
+                                        <tr>
+                                            <td class="text-center" name="id" value="{{ g.id }}" data-editable='false'>
+                                                <input name="id" value="{{ g.id }}" type="checkbox" class="i-checks">
+                                            </td>
+                                            <td class="text-center"><a href="{% url 'assets:asset_detail'%}?id={{ g.id}}">{{ g.ip }}</a></td>
+                                            <td class="text-center"><a href="{% url 'assets:asset_detail'%}?id={{ g.id}}" class="">{{ g.hostname }}</a></td>
+                                            <td class="text-center"><a href="#" class="">{{ g.idc.name }}</a></td>
+                                            <td class="text-center"><a class="">{{ g.admin_user }}</a></td>
+                                            <td class="text-center"><span class="">{{ g.os }}{{ g.os_version }}</span></td>
+                                            <td class="text-center"><span class="">{{ g.cpu_count }}C/{{ g.memory }}G/{{ g.disk_total }}G/{{ g.disk_cloud }}/G</span></td>
+                                            <td class="text-center">
+                                                <span class="btn btn-success" style="height: 25px;width: 50px"><a href="#">连接</a></span>
+                                                <span class="btn btn-danger" style="height: 25px;width: 50px"><a href="{% url 'assets:asset_delete' %}?id={{ g.id }}">删除</a></span>
+                                                <span class="btn btn btn-warning" style="height: 25px;width: 50px">更改</span>
+                                            </td>
+                                        </tr>
                                    {% endfor %}
-
-
-                                    {% if selected_g_id == '-2' %} <!-- 未分组主机-->
-                                            {% for host in request.user.bind_hosts.select_related %}
-                                                <tr>
-                                                    <td class="text-center">{{ forloop.counter }}</td>
-                                                    <td><a href="#" class="btn-link">{{ host.host.hostname }}</a></td>
-                                                    <td><a href="#" class="">{{ host.host.ip_addr }}</a></td>
-                                                    <td><a href="#" class="">{{ host.host.system_type }}</a></td>
-                                                    <td><a href="#" class="">{{ host.host.memo }}</a></td>
-                                                    <td><span class="">{{ host.host_user.username }}</span></td>
-                                                    <td><span class=""></span></td>
-                                                    <td>
-                                                        <span  bind_host_id="{{ host.id }}" class="label label-info cursor gen_token">生成Token</span>
-                                                        <a href="http://{{ webssh.host }}:{{ webssh.port }}?u={{ webssh.username }}&p={{ webssh.password }}" target="_blank"><span class="label label-success cursor host_login">Login</span></a>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                    {% endif %}
-                                    {% if selected_g_id == '-1' %} <!-- 最近登录主机-->
-                                            {% for host in  recent_logins %}
-                                                <tr>
-                                                    <td class="text-center">{{ forloop.counter }}</td>
-                                                    <td><a href="#" class="btn-link">{{ host.host.host.hostname }}</a></td>
-                                                    <td><a href="#" class="">{{ host.host.host.ip_addr }}</a></td>
-                                                    <td><a href="#" class="">{{ host.host.host.system_type }}</a></td>
-                                                    <td><a href="#" class="">{{ host.host.host.memo }}</a></td>
-                                                    <td><span class="">{{ host.host.host_user.username }}</span></td>
-                                                    <td><span class=""></span></td>
-                                                    <td>
-                                                        <span  bind_host_id="{{ host.host.id }}" class="label label-info cursor gen_token">生成Token</span>
-                                                        <a href="http://{{ webssh.host }}:{{ webssh.port }}?u={{ webssh.username }}&p={{ webssh.password }}" target="_blank"><span class="label label-success cursor host_login">Login</span></a>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                    {% endif %}
                                 </tbody>
                             </table>
-
                          </div> <!--end table div-->
                      </div>
+                     <div class="col-sm-6">
+                        <div class="col-sm-6">
+                            <input type="button" id="asset_del" class="btn btn-danger btn-sm" value="批量删除" />
+                            <a href="{% url 'assets:asset_create'%}" type="button" class="btn btn-info">添加主机</a>
+                        </div>
+                     </div>
+
                  </div>
              </div>
 
-
+            <!--分页功能 -->
             <div class="panel-heading" style="float: right;">
                 <nav>
                     <ul class="pagination">
@@ -148,15 +124,6 @@
                     </ul>
                 </nav>
             </div>
-            <div class="col-sm-6">
-                <div id="host_list">
-                    <button type="button" class="btn btn-danger" id="host_del">批量删除</button>
-                    <a value="/assets/host_edit_batch/" type="button" class="btn btn-warning iframe" id="host_edit">批量修改</a>
-                    <a href="#" type="button" class="btn btn-info">添加主机</a>
-                </div>
-            </div>
-
-
         </div>
     </div>
 
@@ -164,19 +131,8 @@
 
 {% block bottom-js %}
 <script type="text/javascript" >
-    $(document).ready(function(){
 
-       $(".gen_token").click(function(){
-           var bind_host_id = $(this).attr("bind_host_id");
-           var token_ele = $(this).parent().prev().children("span");
-           $.post("{% url 'token_gen' %}", {'token_type':'host_token','bind_host_id':bind_host_id},function(callback){
-               var token_obj = JSON.parse(callback);
-               //console.log('--token' + token_obj.token);
-               token_ele.html(token_obj.token);
-           });//end post
-
-       }) ;
-    });
 
 </script>
+
 {% endblock %}
