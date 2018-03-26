@@ -3,20 +3,54 @@
 {% load bootstrap3 %}
 
 {% block page-content %}
-    <form action="" method="post" class="form-horizontal">
+
+    <div class="row">
+    <div class="col-sm-8">
+        <form action="" method="post" class="form-horizontal">
+    {% if af.non_field_errors %}
+        <div class="alert alert-danger">
+        {{ af.non_field_errors }}
+        </div>
+    {% endif %}
     {% csrf_token %}
     <h3>基础配置</h3>
-    create index welcome!
+        {% bootstrap_field af.ip layout="horizontal" %}
+        {% bootstrap_field af.other_ip layout="horizontal" %}
+        {% bootstrap_field af.hostname layout="horizontal" %}
+        {% bootstrap_field af.port layout="horizontal" %}
+        {% bootstrap_field af.groups layout="horizontal" %}
+        {% bootstrap_field af.admin_user layout="horizontal" %}
+        {% bootstrap_field af.system_users layout="horizontal" %}
+        {% bootstrap_field af.idc layout="horizontal" %}
 
+        {% bootstrap_field af.is_active layout="horizontal" %}
+        {% bootstrap_field af.type layout="horizontal" %}
+        {% bootstrap_field af.env layout="horizontal" %}
+        {% bootstrap_field af.status layout="horizontal" %}
+        {% bootstrap_field af.vendor layout="horizontal" %}
+        {% bootstrap_field af.model layout="horizontal" %}
+        {% bootstrap_field af.sn layout="horizontal" %}
+        {% bootstrap_field af.cpu_model layout="horizontal" %}
+        {% bootstrap_field af.cpu_cores layout="horizontal" %}
+        {% bootstrap_field af.cpu_count layout="horizontal" %}
+        {% bootstrap_field af.memory layout="horizontal" %}
+        {% bootstrap_field af.disk_total layout="horizontal" %}
+        {% bootstrap_field af.disk_cloud layout="horizontal" %}
+        {% bootstrap_field af.os_arch layout="horizontal" %}
+        {% bootstrap_field af.os layout="horizontal" %}
+        {% bootstrap_field af.os_version layout="horizontal" %}
+        {% bootstrap_field af.comment layout="horizontal" %}
 
     <div class="hr-line-dashed"></div>
     <div class="form-group">
         <div class="col-sm-4 col-sm-offset-2">
-            <button class="btn btn-default" type="reset"> 重制</button>
+            <button class="btn btn-default" type="reset" > 重制</button>
             <button id="submit_button" class="btn btn-primary" type="submit">提交</button>
         </div>
     </div>
     </form>
+</div>
+    </div>
 {% endblock %}
 
 {% block custom_foot_js %}

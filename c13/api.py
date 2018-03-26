@@ -17,3 +17,10 @@ def get_object(model, **kwargs):
     else:
         the_object = None
     return the_object
+
+class ServerError(Exception):
+    """
+    self define exception
+    自定义异常
+    """
+    pass

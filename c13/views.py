@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 import json
 from users import forms
 
-
+@login_required
 def IndexViews(request):
     return render(request,'index.html')
 

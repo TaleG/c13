@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-
+from assets.forms import *
 from c13.api import *
 
 @login_required
@@ -63,5 +63,37 @@ def AssetDeleteView(request):
     return HttpResponseRedirect('/assets/asset')
 
 
+@login_required
 def AssetCreateView(request):
-    return render(request, 'assets/host_create.html')
+
+    af = AssetForm()
+    if request.method == 'POST':
+        af_post = AssetForm(request.POST)
+        ip = request.POST.get('ip', '')
+        hostname = request.POST.get('hostname', '')
+        try:
+            if Asset.objects.filter(hostname=hostname):
+                error = u'该主机名 %s 已存在！' % hostname
+                raise ServerError(error)
+            if len(hostname) > 64:
+                error = u'主机名长度不能超过64位！'
+                raise ServerError(error)
+        except ServerError:
+            pass
+
+        else:
+            if af_post.is_valid():
+                asset_save = af_post.save(commit=False)
+                if not ip:
+                    asset_save.ip = hostname
+
+                asset_save.save()
+                af_post.save_m2m()
+
+                msg = u'主机 %s 添加成功' % hostname
+                return HttpResponseRedirect('/assets/asset')
+            else:
+                esg = u'主机 %s 添加失败' % hostname
+
+
+    return render(request, 'assets/host_create.html', locals())
